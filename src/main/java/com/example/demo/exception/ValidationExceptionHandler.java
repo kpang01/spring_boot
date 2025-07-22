@@ -36,4 +36,22 @@ public class ValidationExceptionHandler {
 		return responseEntity;
 
 	}
+	
+	@ExceptionHandler(NumberFormatException.class)
+	public ResponseEntity<Map<String, Object>> handleNumberFormatException(NumberFormatException ex) {
+
+		Map<String, Object> responseBody = new HashMap<>();
+		responseBody.put("type", "NumberFormatException exception");
+		responseBody.put("status", HttpStatus.BAD_REQUEST.value());
+		responseBody.put("errors", ex.getMessage());
+
+		ResponseEntity<Map<String, Object>> responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(responseBody);
+
+		if (log.isErrorEnabled()) {
+			log.error("NumberFormatException Exception handled: {}", responseEntity);
+		}
+		return responseEntity;
+
+	}
 }

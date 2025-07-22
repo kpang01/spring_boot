@@ -28,4 +28,6 @@ class ValidationExceptionHandlerTest {
 
         assertNotNull(response.getBody().get("type"));
     }
+    
+    
 }
