@@ -16,12 +16,11 @@ import com.example.demo.model.Item;
 public class ItemService {
 
 	// public static final Map<Long, String> dataStore = new ConcurrentHashMap<>();
-	private final AtomicLong idCounter = new AtomicLong();
 
 	public Item createItem(String value) {
 		// Validation is now handled by ItemValidation in the controller,
 		// but we might add more complex business rules here if needed.
-		long newId = idCounter.incrementAndGet();
+		long newId = Data.getIdCounter().incrementAndGet();
 		Data.getDataStore().put(newId, value);
 		return new Item(newId, value);
 	}

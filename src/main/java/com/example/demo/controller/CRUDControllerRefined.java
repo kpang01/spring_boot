@@ -19,17 +19,15 @@ import com.example.demo.util.ResponseEntityUtil;
 import com.example.demo.validation.ItemValidation;
 import com.example.demo.service.ItemServiceAnalysis;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @RestController
 @RequestMapping("/demo/v2")
 public class CRUDControllerRefined {
 
     private final ItemService itemService;
     private final ItemServiceAnalysis itemServiceAnalysis;
-
-    public CRUDControllerRefined(ItemService itemService, ItemServiceAnalysis itemServiceAnalysis) {
-        this.itemService = itemService;
-        this.itemServiceAnalysis = itemServiceAnalysis;
-    }
 
     // --- CREATE (Auto-generated ID) ---
     @PostMapping

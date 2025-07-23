@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.model.Data;
 
 @RestController
 @RequestMapping("/demo/v1") // Base path for all endpoints in this controller
@@ -37,8 +37,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class CRUDController {
 
-	private final Map<Long, String> dataStore = new ConcurrentHashMap<>();
-	private final AtomicLong idCounter = new AtomicLong();
+	// private final Map<Long, String> dataStore = new ConcurrentHashMap<>();
+	// private final AtomicLong idCounter = new AtomicLong();
+
 
 	// --- CREATE (HTTP POST) ---
 	@PostMapping
@@ -48,8 +49,8 @@ public class CRUDController {
 																										// Request if
 																										// name is empty
 		}
-		long newId = idCounter.incrementAndGet();
-		dataStore.put(newId, newItemName);
+		long newId = Data.getIdCounter().incrementAndGet();
+		Data.getDataStore().put(newId, newItemName);
 		// Returning the ID and the data for confirmation
 		return new ResponseEntity<>("Item created successfully with ID: " + newId + " and data: " + newItemName,
 				HttpStatus.CREATED); // 201 Created
@@ -61,12 +62,12 @@ public class CRUDController {
 	@GetMapping
 	public ResponseEntity<Map<Long, String>> getAllItems() {
 
-		return new ResponseEntity<>(dataStore, HttpStatus.OK); // 200 OK
+		return new ResponseEntity<>(Data.getDataStore(), HttpStatus.OK); // 200 OK
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<String> getItemById(@PathVariable Long id) {
-		String item = dataStore.get(id);
+		String item = Data.getDataStore().get(id);
 		if (item != null) {
 			return new ResponseEntity<>("Found item with ID: " + id + " and data: " + item, HttpStatus.OK); // 200 OK if
 																											// found
@@ -83,7 +84,7 @@ public class CRUDController {
 	    }
 
 	    // Use computeIfPresent to update the item if it exists
-	    String oldName = dataStore.computeIfPresent(id, (key, existingName) -> updatedName);
+	    String oldName = Data.getDataStore().computeIfPresent(id, (key, existingName) -> updatedName);
 
 	    if (oldName != null) {
 	        // If oldName is not null, it means the key was present and the value was updated
@@ -98,7 +99,7 @@ public class CRUDController {
 	// --- DELETE (HTTP DELETE) ---
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteItem(@PathVariable Long id) {
-		String removedItem = dataStore.remove(id); // Returns the removed value or null if not found
+		String removedItem = Data.getDataStore().remove(id); // Returns the removed value or null if not found
 		if (removedItem != null) {
 			return new ResponseEntity<>(
 					"Item with ID: " + id + " and data: '" + removedItem + "' deleted successfully.",
